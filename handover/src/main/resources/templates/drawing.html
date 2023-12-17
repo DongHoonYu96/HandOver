@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Drawing Board</title>
+    <style>
+        body {
+            text-align: center;
+        }
+        #drawingCanvas {
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+<button id="blackPen">Black Pen</button>
+<button id="redPen">Red Pen</button>
+<button id="eraser">Eraser</button>
+<button id="allClear">All Clear</button>
+<canvas id="drawingCanvas" width="800" height="600"></canvas>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var canvas = document.getElementById('drawingCanvas');
+            var context = canvas.getContext('2d');
+            var currentColor = 'black';
+            var isDrawing = false;
+            var lineWidth = 3;
+
+            function setCursor(cursorStyle) {
+                canvas.style.cursor = cursorStyle;
+            }
+
+            canvas.onmousedown = function(e) {
+                isDrawing = true;
+                context.beginPath();
+                context.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            };
+
+            canvas.onmousemove = function(e) {
+                if (isDrawing) {
+                    context.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+                    context.strokeStyle = currentColor;
+                    context.lineWidth = lineWidth;
+                    context.stroke();
+                }
+            };
+
+            canvas.onmouseup = function() {
+                isDrawing = false;
+            };
+
+            document.getElementById('blackPen').addEventListener('click', function() {
+                currentColor = 'black';
+                lineWidth = 3;
+                setCursor('crosshair'); // 기본 커서로 설정
+            });
+
+            document.getElementById('redPen').addEventListener('click', function() {
+                currentColor = 'red';
+                lineWidth = 3;
+                setCursor('url(https://example.com/red-pencil-cursor.png), auto'); // 실제 빨간 연필 아이콘 URL로 변경
+            });
+
+            document.getElementById('eraser').addEventListener('click', function() {
+                currentColor = 'white';
+                lineWidth = 20; // 지우개 두께
+                setCursor('url(https://example.com/eraser-cursor.png), auto'); // 실제 지우개 아이콘 URL로 변경
+            });
+
+            document.getElementById('allClear').addEventListener('click', function() {
+                context.clearRect(0, 0, canvas.width, canvas.height);
+            });
+        });
+    </script>
+</body>
+</html>
